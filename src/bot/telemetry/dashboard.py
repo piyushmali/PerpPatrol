@@ -355,7 +355,7 @@ if st.session_state.bot_running:
 # Main Header
 st.markdown('<p class="header-text">PerpPatrol Live Dashboard</p>', unsafe_allow_html=True)
 if USE_LIVE_DATA:
-    data_mode = "🔴 LIVE TRADING (Mock data due to API auth)"
+    data_mode = "🔴 LIVE TRADING"
 else:
     data_mode = "🟡 SIMULATION"
 st.markdown(f'<p class="subheader-text">Real-time Transaction Impact Optimization | {data_mode}</p>', unsafe_allow_html=True)

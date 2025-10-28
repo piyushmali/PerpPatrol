@@ -8,55 +8,134 @@ import random
 st.set_page_config(
     page_title="PerpPatrol Dashboard",
     page_icon="📊",
-    layout="wide",
+    layout="centered",
     initial_sidebar_state="collapsed"
 )
 
-# Custom CSS for minimal, clean design
+# Custom CSS for centered, clean design with better fonts
 st.markdown("""
 <style>
-    .main-container {
-        background-color: #f8f9fa;
-        padding: 20px;
-        border-radius: 8px;
-        margin: 10px 0;
+    /* Main container centering */
+    .main .block-container {
+        max-width: 1200px;
+        padding-left: 2rem;
+        padding-right: 2rem;
+        margin: 0 auto;
     }
+    
+    /* Font improvements */
+    .stApp {
+        font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+    }
+    
+    /* Query boxes */
     .query-box {
         background-color: #e3f2fd;
-        padding: 15px;
-        border-left: 4px solid #2196f3;
-        margin: 10px 0;
-        border-radius: 4px;
+        padding: 20px;
+        border-left: 5px solid #2196f3;
+        margin: 20px 0;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 500;
+        color: #1565c0;
     }
+    
+    /* Response boxes */
     .response-box {
         background-color: #f1f8e9;
-        padding: 15px;
-        border-left: 4px solid #4caf50;
-        margin: 10px 0;
-        border-radius: 4px;
+        padding: 20px;
+        border-left: 5px solid #4caf50;
+        margin: 20px 0;
+        border-radius: 8px;
+        font-size: 15px;
+        line-height: 1.6;
+        color: #2e7d32;
     }
+    
+    /* Metric cards */
     .metric-card {
         background-color: white;
-        padding: 15px;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        margin: 5px;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        margin: 10px;
+        text-align: center;
+        border: 1px solid #e0e0e0;
     }
-    .status-active { color: #4caf50; font-weight: 600; }
-    .status-warning { color: #ff9800; font-weight: 600; }
-    .status-error { color: #f44336; font-weight: 600; }
-    .header-text { font-size: 24px; font-weight: 600; color: #1976d2; }
-    .subheader-text { font-size: 18px; font-weight: 500; color: #424242; }
-    .data-table { font-family: 'Courier New', monospace; font-size: 14px; }
+    
+    /* Status colors */
+    .status-active { 
+        color: #4caf50; 
+        font-weight: 700; 
+        font-size: 16px;
+    }
+    .status-warning { 
+        color: #ff9800; 
+        font-weight: 700; 
+        font-size: 16px;
+    }
+    .status-error { 
+        color: #f44336; 
+        font-weight: 700; 
+        font-size: 16px;
+    }
+    
+    /* Headers */
+    .header-text { 
+        font-size: 32px; 
+        font-weight: 700; 
+        color: #1976d2; 
+        text-align: center;
+        margin-bottom: 10px;
+    }
+    .subheader-text { 
+        font-size: 20px; 
+        font-weight: 400; 
+        color: #424242; 
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    
+    /* Tables */
+    .dataframe {
+        font-size: 14px !important;
+        font-family: 'Segoe UI', sans-serif !important;
+    }
+    
+    /* Buttons */
+    .stButton > button {
+        width: 100%;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 16px;
+        padding: 12px 24px;
+    }
+    
+    /* Select box */
+    .stSelectbox > div > div {
+        font-size: 16px;
+        font-weight: 500;
+    }
 </style>
 """, unsafe_allow_html=True)
+
+# Add some top spacing
+st.markdown("<br>", unsafe_allow_html=True)
 
 # Main Header
 st.markdown('<p class="header-text">PerpPatrol Dashboard</p>', unsafe_allow_html=True)
 st.markdown('<p class="subheader-text">Transaction Impact Optimization for WOOFi Pro</p>', unsafe_allow_html=True)
 
-# Symbol Selection
-current_symbol = st.selectbox("Select Trading Pair", ["BTC-PERP", "ETH-PERP", "SOL-PERP", "AVAX-PERP"], index=0)
+# Add spacing
+st.markdown("<br>", unsafe_allow_html=True)
+
+# Center the symbol selection
+col1, col2, col3 = st.columns([1, 2, 1])
+with col2:
+    current_symbol = st.selectbox("Select Trading Pair", ["BTC-PERP", "ETH-PERP", "SOL-PERP", "AVAX-PERP"], index=0)
+
+# Add spacing
+st.markdown("<br>", unsafe_allow_html=True)
 
 # Generate dynamic data based on symbol
 base_price = {"BTC-PERP": 67000, "ETH-PERP": 2500, "SOL-PERP": 180, "AVAX-PERP": 35}
@@ -303,18 +382,29 @@ maintaining superior performance through intelligent order management and advanc
 </div>
 """, unsafe_allow_html=True)
 
-# Control Panel
+# Add spacing before control panel
+st.markdown("<br><br>", unsafe_allow_html=True)
+
+# Control Panel - Centered
 st.markdown("---")
-col1, col2, col3 = st.columns(3)
+st.markdown("<br>", unsafe_allow_html=True)
 
-with col1:
-    if st.button("Refresh Data", use_container_width=True):
-        st.rerun()
+# Center the control buttons
+col_left, col_center, col_right = st.columns([1, 2, 1])
+with col_center:
+    btn_col1, btn_col2, btn_col3 = st.columns(3)
+    
+    with btn_col1:
+        if st.button("Refresh Data", use_container_width=True):
+            st.rerun()
+    
+    with btn_col2:
+        if st.button("View Live Trading", use_container_width=True):
+            st.info("Bot is actively trading. Check terminal for live order flow.")
+    
+    with btn_col3:
+        if st.button("System Info", use_container_width=True):
+            st.success("PerpPatrol: First TI-Aware Market Making Bot for WOOFi Pro")
 
-with col2:
-    if st.button("View Live Trading", use_container_width=True):
-        st.info("Bot is actively trading. Check terminal for live order flow.")
-
-with col3:
-    if st.button("System Info", use_container_width=True):
-        st.success("PerpPatrol: First TI-Aware Market Making Bot for WOOFi Pro")
+# Add bottom spacing
+st.markdown("<br><br>", unsafe_allow_html=True)

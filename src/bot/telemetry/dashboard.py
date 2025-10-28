@@ -21,6 +21,12 @@ st.set_page_config(
 # Custom CSS for dark theme with black tabs, green text, grey background
 st.markdown("""
 <style>
+    /* Hide Streamlit menu and header */
+    #MainMenu {visibility: hidden;}
+    .stDeployButton {display: none;}
+    header {visibility: hidden;}
+    .stAppHeader {display: none;}
+    
     /* Main app background */
     .stApp {
         background-color: #2e2e2e;

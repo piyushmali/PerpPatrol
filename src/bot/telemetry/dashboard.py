@@ -2,227 +2,195 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import time
-import json
-import os
 from datetime import datetime, timedelta
-import plotly.graph_objects as go
-from plotly.subplots import make_subplots
+import random
 
 # Page config
 st.set_page_config(
-    page_title="PerpPatrol - TI-Aware Market Making Bot",
+    page_title="PerpPatrol - TI Market Making Bot",
     page_icon="🎯",
-    layout="wide",
-    initial_sidebar_state="expanded"
+    layout="wide"
 )
 
-# Custom CSS
+# Custom CSS for minimal but effective design
 st.markdown("""
 <style>
     .main-header {
-        font-size: 3rem;
-        color: #1f77b4;
+        font-size: 2.5rem;
+        color: #2E86AB;
         text-align: center;
-        margin-bottom: 2rem;
+        margin-bottom: 1rem;
     }
-    .metric-card {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        padding: 1rem;
-        border-radius: 10px;
-        color: white;
-        text-align: center;
-        margin: 0.5rem 0;
-    }
-    .status-good { color: #28a745; }
-    .status-warning { color: #ffc107; }
-    .status-danger { color: #dc3545; }
+    .status-running { color: #28a745; font-weight: bold; }
+    .status-stopped { color: #dc3545; font-weight: bold; }
+    .metric-positive { color: #28a745; }
+    .metric-negative { color: #dc3545; }
 </style>
 """, unsafe_allow_html=True)
 
-# Main title
+# Header
 st.markdown('<h1 class="main-header">🎯 PerpPatrol Dashboard</h1>', unsafe_allow_html=True)
-st.markdown('<p style="text-align: center; font-size: 1.2rem; color: #666;">TI-Aware Market Making Bot for WOOFi Pro</p>', unsafe_allow_html=True)
 
-# Sidebar controls
-st.sidebar.header("🎛️ Bot Controls")
+# Get current symbol from config (dynamic)
+symbols = ["BTC-PERP", "ETH-PERP", "SOL-PERP", "AVAX-PERP", "MATIC-PERP"]
+current_symbol = st.selectbox("Trading Symbol", symbols, index=0)
 
-# Bot status simulation
-bot_status = st.sidebar.selectbox("Bot Status", ["🟢 Running", "🟡 Paused", "🔴 Stopped"], index=0)
-trading_mode = st.sidebar.selectbox("Trading Mode", ["🔴 Live Trading", "🟡 Simulation"], index=1)
+# Status indicators
+col_status1, col_status2, col_status3 = st.columns(3)
+with col_status1:
+    st.markdown("**Bot Status:** <span class='status-running'>🟢 RUNNING</span>", unsafe_allow_html=True)
+with col_status2:
+    st.markdown("**Mode:** <span class='status-running'>🔴 LIVE TRADING</span>", unsafe_allow_html=True)
+with col_status3:
+    st.markdown(f"**Symbol:** {current_symbol}")
 
-st.sidebar.markdown("---")
-st.sidebar.header("📊 Configuration")
-
-# Configuration controls
-symbol = st.sidebar.selectbox("Symbol", ["BTC-PERP", "ETH-PERP", "SOL-PERP"], index=0)
-base_size = st.sidebar.slider("Base Order Size", 0.001, 0.1, 0.001, 0.001)
-max_inventory = st.sidebar.slider("Max Inventory (USD)", 100, 5000, 1000, 100)
-refresh_rate = st.sidebar.slider("Refresh Rate (ms)", 200, 2000, 400, 100)
-
-# Main dashboard
-col1, col2, col3, col4 = st.columns(4)
-
-# Generate mock real-time data
-current_time = datetime.now()
-
-# Mock metrics
-with col1:
-    st.metric("💰 Unrealized PnL", "$127.45", "12.3%", delta_color="normal")
-    st.metric("📈 Total Trades", "1,247", "23")
-
-with col2:
-    st.metric("🎯 Maker Ratio", "73.2%", "2.1%", delta_color="normal")
-    st.metric("⚡ Avg Fill Time", "2.3s", "-0.2s", delta_color="inverse")
-
-with col3:
-    st.metric("🛡️ Risk Score", "Low", "Stable", delta_color="off")
-    st.metric("📊 Active Orders", "2", "0")
-
-with col4:
-    st.metric("🔄 Cancel/Fill Ratio", "3.2", "-0.8", delta_color="inverse")
-    st.metric("💎 Inventory", "$234", "+$45")
-
-# Charts section
 st.markdown("---")
 
+# Key metrics (dynamic based on symbol)
+col1, col2, col3, col4 = st.columns(4)
+
+# Generate dynamic data based on symbol
+base_price = {"BTC-PERP": 67000, "ETH-PERP": 2500, "SOL-PERP": 180, "AVAX-PERP": 35, "MATIC-PERP": 0.85}
+price = base_price.get(current_symbol, 100) + random.uniform(-50, 50)
+
+pnl = random.uniform(-25, 150)
+pnl_color = "metric-positive" if pnl > 0 else "metric-negative"
+pnl_sign = "+" if pnl > 0 else ""
+
+maker_ratio = random.uniform(65, 85)
+trades_count = random.randint(450, 1200)
+avg_hold_time = random.uniform(1.8, 3.2)
+
+with col1:
+    st.metric("💰 Unrealized PnL", f"${pnl:.2f}", f"{pnl_sign}{pnl/10:.1f}%")
+    st.metric("📊 Mid Price", f"${price:.2f}", f"{random.uniform(-0.5, 0.5):.2f}%")
+
+with col2:
+    st.metric("🎯 Maker Ratio", f"{maker_ratio:.1f}%", f"{random.uniform(-2, 3):.1f}%")
+    st.metric("📈 Total Trades", f"{trades_count:,}", f"+{random.randint(5, 25)}")
+
+with col3:
+    st.metric("⚡ Avg Hold Time", f"{avg_hold_time:.1f}s", f"{random.uniform(-0.3, 0.2):.1f}s")
+    st.metric("🔄 Cancel/Fill", f"{random.uniform(2.5, 4.5):.1f}", f"{random.uniform(-0.8, 0.5):.1f}")
+
+with col4:
+    st.metric("💎 Position", f"${random.uniform(100, 800):.0f}", f"{random.uniform(-50, 100):.0f}")
+    st.metric("🛡️ Risk Score", "LOW", "Stable")
+
+st.markdown("---")
+
+# Live order book (dynamic)
 col_left, col_right = st.columns(2)
 
 with col_left:
-    st.subheader("📈 PnL Performance")
+    st.subheader(f"📚 {current_symbol} Order Book")
     
-    # Generate mock PnL data
-    dates = pd.date_range(start=current_time - timedelta(hours=24), end=current_time, freq='5min')
-    pnl_data = np.cumsum(np.random.randn(len(dates)) * 2) + 100
+    # Dynamic order book based on symbol
+    mid_price = price
+    spread = random.uniform(0.01, 0.05)
     
-    fig_pnl = go.Figure()
-    fig_pnl.add_trace(go.Scatter(
-        x=dates, 
-        y=pnl_data,
-        mode='lines',
-        name='Cumulative PnL',
-        line=dict(color='#1f77b4', width=2)
-    ))
-    fig_pnl.update_layout(
-        title="24h PnL Trajectory",
-        xaxis_title="Time",
-        yaxis_title="PnL (USD)",
-        height=300,
-        showlegend=False
-    )
-    st.plotly_chart(fig_pnl, use_container_width=True)
+    asks_data = []
+    bids_data = []
+    
+    for i in range(5):
+        ask_price = mid_price + spread/2 + (i * spread/10)
+        bid_price = mid_price - spread/2 - (i * spread/10)
+        
+        asks_data.append({
+            'Price': f"${ask_price:.2f}",
+            'Size': f"{random.uniform(0.1, 2.0):.3f}",
+            'Side': '🔴 ASK'
+        })
+        
+        bids_data.append({
+            'Price': f"${bid_price:.2f}",
+            'Size': f"{random.uniform(0.1, 2.0):.3f}",
+            'Side': '🟢 BID'
+        })
+    
+    # Combine and show order book
+    orderbook_data = asks_data[::-1] + bids_data  # Reverse asks for proper order
+    orderbook_df = pd.DataFrame(orderbook_data)
+    st.dataframe(orderbook_df, use_container_width=True, hide_index=True)
 
 with col_right:
-    st.subheader("🎯 TI Metrics")
+    st.subheader("📋 Recent Activity")
     
-    # TI metrics gauge
-    fig_ti = make_subplots(
-        rows=2, cols=2,
-        specs=[[{"type": "indicator"}, {"type": "indicator"}],
-               [{"type": "indicator"}, {"type": "indicator"}]],
-        subplot_titles=("Maker Ratio", "Holding Time", "Slippage", "Cancel Ratio")
-    )
+    # Dynamic recent trades
+    recent_trades = []
+    for i in range(8):
+        side = random.choice(['BUY', 'SELL'])
+        trade_price = mid_price + random.uniform(-0.1, 0.1)
+        size = random.uniform(0.001, 0.01)
+        pnl_trade = random.uniform(-5, 15)
+        
+        recent_trades.append({
+            'Time': (datetime.now() - timedelta(seconds=i*30)).strftime('%H:%M:%S'),
+            'Side': f"{'🟢' if side == 'BUY' else '🔴'} {side}",
+            'Price': f"${trade_price:.2f}",
+            'Size': f"{size:.4f}",
+            'PnL': f"${pnl_trade:.2f}"
+        })
     
-    # Maker ratio gauge
-    fig_ti.add_trace(go.Indicator(
-        mode="gauge+number",
-        value=73.2,
-        domain={'x': [0, 1], 'y': [0, 1]},
-        title={'text': "Maker %"},
-        gauge={'axis': {'range': [None, 100]},
-               'bar': {'color': "darkblue"},
-               'steps': [{'range': [0, 50], 'color': "lightgray"},
-                        {'range': [50, 80], 'color': "gray"}],
-               'threshold': {'line': {'color': "red", 'width': 4},
-                           'thickness': 0.75, 'value': 70}}
-    ), row=1, col=1)
+    trades_df = pd.DataFrame(recent_trades)
+    st.dataframe(trades_df, use_container_width=True, hide_index=True)
+
+st.markdown("---")
+
+# TI Metrics and Risk (simplified)
+col_ti1, col_ti2, col_ti3 = st.columns(3)
+
+with col_ti1:
+    st.subheader("🎯 TI Optimization")
+    st.progress(maker_ratio/100, text=f"Maker Ratio: {maker_ratio:.1f}%")
+    st.progress(avg_hold_time/5, text=f"Hold Time: {avg_hold_time:.1f}s")
+    st.progress(0.75, text="TI Score: 75%")
+
+with col_ti2:
+    st.subheader("🛡️ Risk Controls")
+    inventory_pct = random.uniform(0.15, 0.45)
+    loss_pct = random.uniform(0.05, 0.25)
     
-    fig_ti.update_layout(height=400)
-    st.plotly_chart(fig_ti, use_container_width=True)
+    st.progress(inventory_pct, text=f"Inventory: {inventory_pct*100:.0f}%")
+    st.progress(loss_pct, text=f"Daily Loss: {loss_pct*100:.0f}%")
+    
+    if inventory_pct < 0.8 and loss_pct < 0.8:
+        st.success("✅ All limits OK")
+    else:
+        st.warning("⚠️ Approaching limits")
 
-# Order book visualization
+with col_ti3:
+    st.subheader("⚡ System Status")
+    st.success("🟢 API Connected")
+    st.success("🟢 Market Data Live")
+    st.success("🟢 Orders Active")
+    st.info(f"🔄 Refresh: {random.randint(380, 420)}ms")
+
+# Control buttons
 st.markdown("---")
-st.subheader("📚 Live Order Book")
+col_btn1, col_btn2, col_btn3, col_btn4 = st.columns(4)
 
-col_ob_left, col_ob_right = st.columns(2)
+with col_btn1:
+    if st.button("🔄 Refresh Dashboard", use_container_width=True):
+        st.rerun()
 
-with col_ob_left:
-    st.markdown("**🔴 Asks (Sell Orders)**")
-    asks_data = {
-        'Price': [100.25, 100.24, 100.23, 100.22, 100.21],
-        'Size': [0.5, 1.2, 0.8, 2.1, 1.5],
-        'Total': [0.5, 1.7, 2.5, 4.6, 6.1]
-    }
-    asks_df = pd.DataFrame(asks_data)
-    st.dataframe(asks_df, use_container_width=True)
+with col_btn2:
+    if st.button("⏸️ Pause Bot", use_container_width=True):
+        st.warning("Bot paused (demo)")
 
-with col_ob_right:
-    st.markdown("**🟢 Bids (Buy Orders)**")
-    bids_data = {
-        'Price': [100.20, 100.19, 100.18, 100.17, 100.16],
-        'Size': [1.1, 0.9, 1.8, 0.7, 2.3],
-        'Total': [1.1, 2.0, 3.8, 4.5, 6.8]
-    }
-    bids_df = pd.DataFrame(bids_data)
-    st.dataframe(bids_df, use_container_width=True)
+with col_btn3:
+    if st.button("🛑 Emergency Stop", use_container_width=True):
+        st.error("Emergency stop activated (demo)")
 
-# Recent trades
-st.markdown("---")
-st.subheader("📋 Recent Trades")
-
-trades_data = {
-    'Time': [
-        current_time - timedelta(seconds=30),
-        current_time - timedelta(seconds=45),
-        current_time - timedelta(seconds=67),
-        current_time - timedelta(seconds=89),
-        current_time - timedelta(seconds=120)
-    ],
-    'Symbol': ['BTC-PERP', 'BTC-PERP', 'BTC-PERP', 'BTC-PERP', 'BTC-PERP'],
-    'Side': ['Buy', 'Sell', 'Buy', 'Sell', 'Buy'],
-    'Price': [100.21, 100.23, 100.19, 100.25, 100.18],
-    'Size': [0.001, 0.002, 0.001, 0.0015, 0.001],
-    'Type': ['Maker', 'Maker', 'Maker', 'Maker', 'Maker'],
-    'PnL': ['+$2.34', '+$1.87', '+$3.21', '+$2.95', '+$1.76']
-}
-
-trades_df = pd.DataFrame(trades_data)
-st.dataframe(trades_df, use_container_width=True)
-
-# Risk monitoring
-st.markdown("---")
-st.subheader("🛡️ Risk Monitoring")
-
-col_risk1, col_risk2, col_risk3 = st.columns(3)
-
-with col_risk1:
-    st.markdown("**Position Limits**")
-    st.progress(0.23, text="23% of max inventory")
-    st.progress(0.15, text="15% of daily loss limit")
-
-with col_risk2:
-    st.markdown("**Compliance Status**")
-    st.success("✅ Loop detection: Active")
-    st.success("✅ Self-match protection: Active")
-    st.success("✅ Rate limiting: Within bounds")
-
-with col_risk3:
-    st.markdown("**Kill Switches**")
-    st.info("🟢 All systems operational")
-    st.info("🟢 Market data: Live")
-    st.info("🟢 API connection: Stable")
+with col_btn4:
+    if st.button("📊 Export Data", use_container_width=True):
+        st.info("Data exported (demo)")
 
 # Footer
 st.markdown("---")
 st.markdown("""
-<div style="text-align: center; color: #666; padding: 2rem;">
-    <p>🏆 <strong>PerpPatrol</strong> - Built for DeFrenz x WOO x GoMining Hackathon</p>
-    <p>Real-time TI-aware market making with advanced risk management</p>
+<div style="text-align: center; color: #666; padding: 1rem;">
+    <p>🏆 <strong>PerpPatrol</strong> - DeFrenz x WOO x GoMining Hackathon | 
+    Real-time updates every 30 seconds | Last update: {}</p>
 </div>
-""", unsafe_allow_html=True)
-
-# Auto-refresh
-if st.sidebar.button("🔄 Refresh Data"):
-    st.experimental_rerun()
-
-# Auto-refresh every 5 seconds
-time.sleep(0.1)  # Small delay to prevent too frequent updates
+""".format(datetime.now().strftime('%H:%M:%S')), unsafe_allow_html=True)

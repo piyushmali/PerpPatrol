@@ -78,34 +78,52 @@ PerpPatrol monitors and optimizes:
 - Rate limiting enforcement
 - Single wallet validation
 
-## 🎮 Demo Journey
+## 🎮 Interactive Demo Experience
 
-### Step 1: The Problem
-Traditional bots show poor performance:
-- Maker Ratio: 45%
-- Cancel/Fill: 15.2
-- Hold Time: 0.8s
-- Daily PnL: -$45
+### 4-Tab Dashboard Interface
 
-### Step 2: PerpPatrol Solution
-TI-optimized performance:
-- Maker Ratio: 75%+
-- Cancel/Fill: 2.8
-- Hold Time: 2.5s
-- Daily PnL: +$125
+**Tab 1: Live Performance**
+- Real-time PnL tracking and metrics
+- Live order book visualization
+- Recent trades history
+- Multi-asset switching (BTC, ETH, SOL, AVAX)
 
-### Step 3: Results
-60%+ reduction in transaction costs while maintaining profitability.
+**Tab 2: Analytics & Charts**
+- Interactive PnL charts with Plotly
+- TI Score gauge (composite metric)
+- Trading volume analysis
+- Performance visualization
+
+**Tab 3: Bot Configuration**
+- Live parameter adjustment
+- System information display
+- Real-time log messages
+- Configuration management
+
+**Tab 4: Risk Management**
+- Position limit monitoring
+- Compliance status checks
+- Emergency controls
+- System health metrics
+
+### Demo Modes
+- **Live Mode**: Real WOOFi Pro API integration (REQUIRES API credentials)
+- **Simulation Mode**: Mock data fallback (when no API credentials)
+- **Hybrid Mode**: Live data with simulated trading
 
 ## 🏆 Key Differentiators
 
 - **First TI-aware market making bot**
 - **Built specifically for WOOFi Pro**
 - **Production-ready with comprehensive testing**
-- **Real-time dashboard for live monitoring**
-- **Open-source and well-documented**
+- **Interactive real-time dashboard with 4-tab interface**
+- **Live data integration with simulation fallback**
+- **Professional terminal-style UI with dark theme**
+- **Multi-deployment support (local, Docker, Heroku)**
+- **Open-source and extensively documented**
 - **Institutional-grade risk management**
 - **Advanced compliance systems**
+- **Easy-to-use dashboard launcher script**
 
 ## 🚀 Getting Started
 
@@ -115,15 +133,16 @@ git clone https://github.com/piyushmali/PerpPatrol.git
 cd PerpPatrol
 pip install -r requirements.txt
 
-# Configure credentials
+# Configure credentials (REQUIRED for live trading)
 cp .env.example .env
-# Add your WOOFi Pro API credentials
+# Add your WOOFi Pro API credentials for live trading
 
-# Run the bot
+# Launch interactive dashboard (recommended)
+python run_dashboard.py
+# Opens at http://localhost:8501
+
+# Alternative: Run bot directly
 python -m src.bot.app --config config/settings.example.yaml
-
-# Launch dashboard
-streamlit run src/bot/telemetry/dashboard.py --server.port 8501
 ```
 
 ## 📈 Performance Metrics

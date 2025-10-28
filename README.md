@@ -57,9 +57,10 @@ pip install -r requirements.txt
 
 ### 2. Configuration
 ```bash
-# Set up your WOOFi Pro API credentials
+# REQUIRED: Set up your WOOFi Pro API credentials for live trading
 cp .env.example .env
 # Edit .env with your API key and secret
+# Without credentials, dashboard will show simulation mode only
 ```
 
 ### 3. Run the Bot
@@ -67,26 +68,33 @@ cp .env.example .env
 # Start trading bot
 python -m src.bot.app --config config/settings.example.yaml
 
-# Launch interactive dashboard (new terminal)
+# Launch interactive dashboard (new terminal) - RECOMMENDED
+python run_dashboard.py
+
+# Alternative: Direct streamlit command
 streamlit run src/bot/telemetry/dashboard.py --server.port 8501
 ```
 
 ### 4. Access Dashboard
 Open `http://localhost:8501` for the interactive demo dashboard
 
-## 📊 Demo Dashboard
+## 📊 Interactive Dashboard
 
-Experience the **3-step demo journey**:
+Experience the **comprehensive 4-tab interface**:
 
-1. **📉 Problem**: See traditional bot inefficiencies
-2. **🎯 Solution**: Watch PerpPatrol's TI optimization
-3. **🏆 Results**: Compare performance improvements
+1. **📊 Live Performance**: Real-time metrics, order book, and trade history
+2. **📈 Analytics & Charts**: PnL visualization, TI metrics, and volume analysis
+3. **⚙️ Bot Configuration**: Trading parameters and system management
+4. **🛡️ Risk Management**: Position limits, compliance status, and emergency controls
 
 **Features:**
-- Interactive multi-asset trading
-- Real-time performance metrics
-- Live risk monitoring
-- Transaction cost analysis
+- **Live Data Integration**: Real WOOFi Pro API (REQUIRES API credentials)
+- **Simulation Fallback**: Mock data when API credentials missing
+- **Interactive Controls**: Start/stop bot, emergency kill switch, configuration tuning
+- **Real-time Charts**: PnL tracking, TI score gauges, volume analysis
+- **Multi-asset Support**: Switch between BTC, ETH, SOL, AVAX perpetuals
+- **Risk Monitoring**: Position limits, compliance checks, system health
+- **Professional UI**: Dark theme with terminal-style green aesthetics
 
 ## 🏗️ Architecture
 
@@ -113,6 +121,9 @@ Metrics Collection → Dashboard → Performance Tuning
 ## 🎮 Demo Commands
 
 ```bash
+# Launch dashboard (recommended)
+python run_dashboard.py
+
 # Run unit tests
 python -m pytest tests/ -v
 
@@ -121,6 +132,9 @@ python -m src.simulator.run_backtest --config config/settings.example.yaml
 
 # Stress test scenarios
 python -m src.simulator.scenario_vol_spike
+
+# Direct bot execution
+python -m src.bot.app --config config/settings.example.yaml
 ```
 
 ## 🏆 Key Advantages
@@ -149,6 +163,8 @@ python -m src.simulator.scenario_vol_spike
 - **SOL-PERP**: Solana perpetual futures
 - **AVAX-PERP**: Avalanche perpetual futures
 - **MATIC-PERP**: Polygon perpetual futures
+
+*All markets supported with real-time data feeds and adaptive TI optimization*
 
 ## 🤝 Contributing
 

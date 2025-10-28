@@ -110,6 +110,42 @@ exchange:
   ws_url: wss://wss.woo.org
   api_key: ${WOOFI_API_KEY}
   api_secret: ${WOOFI_API_SECRET}
+
+strategy:
+  symbols: ["BTC-PERP"]
+  base_order_size: 0.001
+  max_inventory_usd: 1000
+  maker_bias: 1.0
+  refresh_min_ms: 400
+  refresh_jitter_ms: 200
+  width_vol_mult: 1.5
+  inv_skew_strength: 0.4
+  imbalance_skew_strength: 0.3
+  funding_bias_strength: 0.15
+  min_quote_notional: 20
+
+risk:
+  max_symbol_notional: 2000
+  max_portfolio_var_usd: 150
+  daily_loss_limit_usd: 200
+  drawdown_step_down: true
+  drawdown_step_pct: 0.33
+
+compliance:
+  self_match_protect: true
+  loop_min_holding_ms: 1500
+  max_amends_per_sec: 2
+
+ti_proxy:
+  target_maker_ratio: 0.7
+  max_slippage_frac: 0.3
+  min_avg_holding_ms: 2000
+  max_cancel_per_fill: 8
+
+dashboard:
+  enabled: true
+  host: localhost
+  port: 8501
 ```
 
 ## 📊 TI Metrics Implementation
@@ -227,6 +263,72 @@ def jitter_up(self):
     self._refresh_min = min(1.5, self._refresh_min * 1.1)
 ```
 
+## 📊 Dashboard Implementation
+
+### Interactive Dashboard Architecture
+The dashboard (`src/bot/telemetry/dashboard.py`) provides a comprehensive 4-tab interface:
+
+```python
+# Dashboard launcher with proper path setup
+python run_dashboard.py
+```
+
+### Dashboard Features
+
+#### Tab 1: Live Performance
+- Real-time PnL tracking with Plotly charts
+- Live order book visualization
+- Recent trades history with filtering
+- Multi-asset symbol switching
+
+#### Tab 2: Analytics & Charts
+- Interactive PnL performance charts
+- TI Score gauge (composite metric)
+- Trading volume analysis by side
+- Real-time performance metrics
+
+#### Tab 3: Bot Configuration
+- Live parameter adjustment sliders
+- System information display
+- Real-time log message streaming
+- Configuration persistence
+
+#### Tab 4: Risk Management
+- Position limit progress bars
+- Compliance status indicators
+- Emergency stop controls
+- System health monitoring
+
+### Live Data Integration
+```python
+# Automatic fallback system
+if USE_LIVE_DATA:
+    # Real WOOFi Pro API integration
+    positions = await live_data_manager.get_live_positions()
+    trades = await live_data_manager.get_live_trades()
+else:
+    # Realistic simulation mode
+    generate_simulated_data()
+```
+
+### Dashboard Launcher
+The `run_dashboard.py` script ensures proper environment setup:
+
+```python
+# Automatic Python path configuration
+project_root = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, project_root)
+os.environ['PYTHONPATH'] = project_root
+
+# Launch with optimal settings
+subprocess.run([
+    sys.executable, "-m", "streamlit", "run", 
+    "src/bot/telemetry/dashboard.py",
+    "--server.port", "8501",
+    "--server.headless", "false"
+])
+```
+
 ## 🧪 Testing Framework
 
 ### Unit Tests
@@ -241,6 +343,12 @@ def jitter_up(self):
 - Market data processing
 - Error handling
 
+### Dashboard Testing
+- Interactive component functionality
+- Live data integration
+- Chart rendering and updates
+- Emergency control validation
+
 ### Simulation Testing
 ```python
 # Backtest with historical data
@@ -248,6 +356,9 @@ python -m src.simulator.run_backtest --config config/settings.example.yaml
 
 # Stress test with volatility spikes
 python -m src.simulator.scenario_vol_spike
+
+# Dashboard demo mode (simulation only)
+python run_dashboard.py  # Runs in simulation mode without API keys
 ```
 
 ## 🚀 Deployment
@@ -257,28 +368,52 @@ python -m src.simulator.scenario_vol_spike
 # Install dependencies
 pip install -r requirements.txt
 
-# Set up environment
+# Set up environment (REQUIRED for live trading)
 cp .env.example .env
 # Edit .env with your credentials
 
-# Run in simulation mode
+# Launch interactive dashboard (recommended)
+python run_dashboard.py
+
+# Alternative: Run bot directly
 python -m src.bot.app --config config/settings.example.yaml
 ```
 
 ### Production Deployment
-```bash
-# Docker deployment
-docker build -t perppatrol .
-docker run -d --env-file .env perppatrol
 
-# Monitor with dashboard
-streamlit run src/bot/telemetry/dashboard.py --server.port 8501
+#### Docker Deployment
+```bash
+# Build and run with Docker
+docker build -t perppatrol .
+docker run -d --env-file .env -p 8501:8501 perppatrol
+
+# Access dashboard at http://localhost:8501
+```
+
+#### Heroku Deployment
+```bash
+# Deploy to Heroku (configured with Procfile)
+git push heroku main
+
+# Set environment variables
+heroku config:set WOOFI_API_KEY=your_key
+heroku config:set WOOFI_API_SECRET=your_secret
+```
+
+#### Local Production
+```bash
+# Run with production settings
+export WOOFI_API_KEY=your_key
+export WOOFI_API_SECRET=your_secret
+python run_dashboard.py
 ```
 
 ### Configuration Management
-- Environment variables for secrets
-- YAML configuration for strategy parameters
+- Environment variables for secrets (`.env` file)
+- YAML configuration for strategy parameters (`config/settings.example.yaml`)
 - Hot-reload capability for parameter tuning
+- Dashboard-based configuration interface
+- Multiple deployment configurations (local, Docker, Heroku)
 
 ---
 

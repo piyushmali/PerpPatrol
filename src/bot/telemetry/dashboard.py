@@ -13,10 +13,19 @@ import random
 
 # Import live data manager with proper error handling
 try:
+    import sys
+    import os
+    # Add project root to Python path
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.dirname(os.path.dirname(os.path.dirname(current_dir)))
+    if project_root not in sys.path:
+        sys.path.insert(0, project_root)
+    
     from src.bot.api.live_data import live_data_manager
     LIVE_DATA_AVAILABLE = True
+    print("✅ Live data manager imported successfully")
 except ImportError as e:
-    print(f"Live data not available: {e}")
+    print(f"❌ Live data not available: {e}")
     LIVE_DATA_AVAILABLE = False
     live_data_manager = None
 

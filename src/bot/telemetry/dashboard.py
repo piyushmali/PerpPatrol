@@ -11,9 +11,14 @@ import asyncio
 from datetime import datetime, timedelta
 import random
 
-# Simplified import - disable live API for now to fix loading issue
-LIVE_DATA_AVAILABLE = False
-live_data_manager = None
+# Import live data manager with proper error handling
+try:
+    from src.bot.api.live_data import live_data_manager
+    LIVE_DATA_AVAILABLE = True
+except ImportError as e:
+    print(f"Live data not available: {e}")
+    LIVE_DATA_AVAILABLE = False
+    live_data_manager = None
 
 # Page config
 st.set_page_config(
@@ -199,9 +204,27 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+# Load environment variables from .env file if available
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
+
 # Check if we have real API credentials
 API_CREDENTIALS_AVAILABLE = bool(os.getenv('WOOFI_API_KEY') and os.getenv('WOOFI_API_SECRET'))
 USE_LIVE_DATA = LIVE_DATA_AVAILABLE and API_CREDENTIALS_AVAILABLE
+
+# Debug info
+if LIVE_DATA_AVAILABLE:
+    print("✅ Live data manager loaded successfully")
+else:
+    print("❌ Live data manager not available")
+
+if API_CREDENTIALS_AVAILABLE:
+    print("✅ API credentials found")
+else:
+    print("❌ API credentials not found")
 
 # Initialize session state for live data
 if 'bot_running' not in st.session_state:
@@ -299,8 +322,20 @@ def generate_simulated_data():
             st.session_state.trades_history = st.session_state.trades_history[-50:]
 
 def update_data():
-    """Update data - simplified for reliability"""
-    generate_simulated_data()
+    """Update data - real or simulated"""
+    if USE_LIVE_DATA:
+        # Run async function safely
+        try:
+            import asyncio
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            loop.run_until_complete(fetch_real_data())
+            loop.close()
+        except Exception as e:
+            st.error(f"Error with live data: {e}")
+            generate_simulated_data()
+    else:
+        generate_simulated_data()
 
 # Auto-refresh data if bot is running
 if st.session_state.bot_running:
@@ -310,7 +345,7 @@ if st.session_state.bot_running:
 
 # Main Header
 st.markdown('<p class="header-text">PerpPatrol Live Dashboard</p>', unsafe_allow_html=True)
-data_mode = "🟡 SIMULATION"
+data_mode = "🔴 LIVE TRADING" if USE_LIVE_DATA else "🟡 SIMULATION"
 st.markdown(f'<p class="subheader-text">Real-time Transaction Impact Optimization | {data_mode}</p>', unsafe_allow_html=True)
 
 # Bot Control Panel
@@ -322,7 +357,10 @@ with col1:
                 use_container_width=True):
         st.session_state.bot_running = not st.session_state.bot_running
         if st.session_state.bot_running:
-            st.success("🟡 Simulation started!")
+            if USE_LIVE_DATA:
+                st.success("🔴 LIVE TRADING STARTED!")
+            else:
+                st.success("🟡 Simulation started!")
             update_data()  # Generate initial data
         else:
             st.warning("Bot stopped.")

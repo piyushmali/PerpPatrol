@@ -11,19 +11,9 @@ import asyncio
 from datetime import datetime, timedelta
 import random
 
-# Import live data manager
-try:
-    import sys
-    sys.path.append('/mount/src/perppatrol')  # Streamlit Cloud path
-    from src.bot.api.live_data import live_data_manager
-    LIVE_DATA_AVAILABLE = True
-except ImportError:
-    try:
-        from src.bot.api.live_data import live_data_manager
-        LIVE_DATA_AVAILABLE = True
-    except ImportError:
-        LIVE_DATA_AVAILABLE = False
-        live_data_manager = None
+# Simplified import - disable live API for now to fix loading issue
+LIVE_DATA_AVAILABLE = False
+live_data_manager = None
 
 # Page config
 st.set_page_config(
@@ -309,19 +299,8 @@ def generate_simulated_data():
             st.session_state.trades_history = st.session_state.trades_history[-50:]
 
 def update_data():
-    """Update data - real or simulated"""
-    if USE_LIVE_DATA:
-        # Run async function in Streamlit
-        try:
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-            loop.run_until_complete(fetch_real_data())
-            loop.close()
-        except Exception as e:
-            st.error(f"Error with live data: {e}")
-            generate_simulated_data()
-    else:
-        generate_simulated_data()
+    """Update data - simplified for reliability"""
+    generate_simulated_data()
 
 # Auto-refresh data if bot is running
 if st.session_state.bot_running:
@@ -331,7 +310,7 @@ if st.session_state.bot_running:
 
 # Main Header
 st.markdown('<p class="header-text">PerpPatrol Live Dashboard</p>', unsafe_allow_html=True)
-data_mode = "🔴 LIVE TRADING" if USE_LIVE_DATA else "🟡 SIMULATION"
+data_mode = "🟡 SIMULATION"
 st.markdown(f'<p class="subheader-text">Real-time Transaction Impact Optimization | {data_mode}</p>', unsafe_allow_html=True)
 
 # Bot Control Panel
@@ -343,10 +322,7 @@ with col1:
                 use_container_width=True):
         st.session_state.bot_running = not st.session_state.bot_running
         if st.session_state.bot_running:
-            if USE_LIVE_DATA:
-                st.success("🔴 LIVE TRADING STARTED!")
-            else:
-                st.success("🟡 Simulation started!")
+            st.success("🟡 Simulation started!")
             update_data()  # Generate initial data
         else:
             st.warning("Bot stopped.")
@@ -412,65 +388,28 @@ with tab1:
     with col_left:
         st.subheader("Live Order Book")
         
-        if USE_LIVE_DATA:
-            # Fetch real orderbook
-            try:
-                loop = asyncio.new_event_loop()
-                asyncio.set_event_loop(loop)
-                orderbook_data = loop.run_until_complete(live_data_manager.get_live_orderbook(current_symbol))
-                loop.close()
-                
-                if orderbook_data:
-                    st.dataframe(pd.DataFrame(orderbook_data), use_container_width=True, hide_index=True)
-                else:
-                    st.info("No orderbook data available")
-            except Exception as e:
-                st.error(f"Error fetching orderbook: {e}")
-                # Fallback to simulated data
-                orderbook_data = []
-                mid_price = price
-                spread = random.uniform(0.01, 0.05)
-                
-                for i in range(5):
-                    ask_price = mid_price + spread/2 + (i * spread/10)
-                    orderbook_data.append({
-                        'Type': 'ASK',
-                        'Price': f"${ask_price:.2f}",
-                        'Size': f"{random.uniform(0.1, 2.0):.3f}"
-                    })
-                    
-                for i in range(5):
-                    bid_price = mid_price - spread/2 - (i * spread/10)
-                    orderbook_data.append({
-                        'Type': 'BID', 
-                        'Price': f"${bid_price:.2f}",
-                        'Size': f"{random.uniform(0.1, 2.0):.3f}"
-                    })
-                
-                st.dataframe(pd.DataFrame(orderbook_data), use_container_width=True, hide_index=True)
-        else:
-            # Generate simulated order book data
-            orderbook_data = []
-            mid_price = price
-            spread = random.uniform(0.01, 0.05)
+        # Generate simulated order book data
+        orderbook_data = []
+        mid_price = price
+        spread = random.uniform(0.01, 0.05)
+        
+        for i in range(5):
+            ask_price = mid_price + spread/2 + (i * spread/10)
+            orderbook_data.append({
+                'Type': 'ASK',
+                'Price': f"${ask_price:.2f}",
+                'Size': f"{random.uniform(0.1, 2.0):.3f}"
+            })
             
-            for i in range(5):
-                ask_price = mid_price + spread/2 + (i * spread/10)
-                orderbook_data.append({
-                    'Type': 'ASK',
-                    'Price': f"${ask_price:.2f}",
-                    'Size': f"{random.uniform(0.1, 2.0):.3f}"
-                })
-                
-            for i in range(5):
-                bid_price = mid_price - spread/2 - (i * spread/10)
-                orderbook_data.append({
-                    'Type': 'BID', 
-                    'Price': f"${bid_price:.2f}",
-                    'Size': f"{random.uniform(0.1, 2.0):.3f}"
-                })
-            
-            st.dataframe(pd.DataFrame(orderbook_data), use_container_width=True, hide_index=True)
+        for i in range(5):
+            bid_price = mid_price - spread/2 - (i * spread/10)
+            orderbook_data.append({
+                'Type': 'BID', 
+                'Price': f"${bid_price:.2f}",
+                'Size': f"{random.uniform(0.1, 2.0):.3f}"
+            })
+        
+        st.dataframe(pd.DataFrame(orderbook_data), use_container_width=True, hide_index=True)
     
     with col_right:
         st.subheader("Recent Trades")

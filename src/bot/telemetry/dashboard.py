@@ -12,109 +12,172 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Custom CSS for centered, clean design with better fonts
+# Custom CSS for dark theme with black tabs, green text, grey background
 st.markdown("""
 <style>
+    /* Main app background */
+    .stApp {
+        background-color: #2e2e2e;
+        font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+        color: #00ff00;
+    }
+    
     /* Main container centering */
     .main .block-container {
         max-width: 1200px;
         padding-left: 2rem;
         padding-right: 2rem;
         margin: 0 auto;
+        background-color: #2e2e2e;
     }
     
-    /* Font improvements */
-    .stApp {
-        font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
-    }
-    
-    /* Query boxes */
+    /* Query boxes - black background with green text */
     .query-box {
-        background-color: #e3f2fd;
+        background-color: #000000;
         padding: 20px;
-        border-left: 5px solid #2196f3;
+        border-left: 5px solid #00ff00;
         margin: 20px 0;
         border-radius: 8px;
         font-size: 16px;
         font-weight: 500;
-        color: #1565c0;
+        color: #00ff00;
+        border: 1px solid #00ff00;
     }
     
-    /* Response boxes */
+    /* Response boxes - black background with green text */
     .response-box {
-        background-color: #f1f8e9;
+        background-color: #000000;
         padding: 20px;
-        border-left: 5px solid #4caf50;
+        border-left: 5px solid #00ff00;
         margin: 20px 0;
         border-radius: 8px;
         font-size: 15px;
         line-height: 1.6;
-        color: #2e7d32;
+        color: #00ff00;
+        border: 1px solid #00ff00;
     }
     
-    /* Metric cards */
+    /* Metric cards - black background with green text */
     .metric-card {
-        background-color: white;
+        background-color: #000000;
         padding: 20px;
         border-radius: 12px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 6px rgba(0,255,0,0.2);
         margin: 10px;
         text-align: center;
-        border: 1px solid #e0e0e0;
+        border: 1px solid #00ff00;
+        color: #00ff00;
     }
     
-    /* Status colors */
+    /* Status colors - all green variations */
     .status-active { 
-        color: #4caf50; 
+        color: #00ff00; 
         font-weight: 700; 
         font-size: 16px;
     }
     .status-warning { 
-        color: #ff9800; 
+        color: #90ff90; 
         font-weight: 700; 
         font-size: 16px;
     }
     .status-error { 
-        color: #f44336; 
+        color: #60ff60; 
         font-weight: 700; 
         font-size: 16px;
     }
     
-    /* Headers */
+    /* Headers - green text */
     .header-text { 
         font-size: 32px; 
         font-weight: 700; 
-        color: #1976d2; 
+        color: #00ff00; 
         text-align: center;
         margin-bottom: 10px;
     }
     .subheader-text { 
         font-size: 20px; 
         font-weight: 400; 
-        color: #424242; 
+        color: #90ff90; 
         text-align: center;
         margin-bottom: 30px;
     }
     
-    /* Tables */
+    /* Tables - dark theme */
     .dataframe {
         font-size: 14px !important;
         font-family: 'Segoe UI', sans-serif !important;
+        background-color: #000000 !important;
+        color: #00ff00 !important;
     }
     
-    /* Buttons */
+    /* Streamlit components styling */
+    .stSelectbox > div > div > div {
+        background-color: #000000;
+        color: #00ff00;
+        border: 1px solid #00ff00;
+    }
+    
+    .stSelectbox > div > div {
+        font-size: 16px;
+        font-weight: 500;
+        color: #00ff00;
+    }
+    
+    /* Buttons - black with green text */
     .stButton > button {
         width: 100%;
         border-radius: 8px;
         font-weight: 600;
         font-size: 16px;
         padding: 12px 24px;
+        background-color: #000000;
+        color: #00ff00;
+        border: 2px solid #00ff00;
     }
     
-    /* Select box */
-    .stSelectbox > div > div {
-        font-size: 16px;
-        font-weight: 500;
+    .stButton > button:hover {
+        background-color: #00ff00;
+        color: #000000;
+        border: 2px solid #00ff00;
+    }
+    
+    /* Dataframe styling */
+    .stDataFrame {
+        background-color: #000000;
+    }
+    
+    .stDataFrame > div {
+        background-color: #000000;
+        color: #00ff00;
+    }
+    
+    /* Override Streamlit's default colors */
+    .stMarkdown {
+        color: #00ff00;
+    }
+    
+    /* Success/Info/Warning message styling */
+    .stSuccess {
+        background-color: #000000;
+        color: #00ff00;
+        border: 1px solid #00ff00;
+    }
+    
+    .stInfo {
+        background-color: #000000;
+        color: #00ff00;
+        border: 1px solid #00ff00;
+    }
+    
+    .stWarning {
+        background-color: #000000;
+        color: #90ff90;
+        border: 1px solid #90ff90;
+    }
+    
+    /* Horizontal rule */
+    hr {
+        border-color: #00ff00;
     }
 </style>
 """, unsafe_allow_html=True)

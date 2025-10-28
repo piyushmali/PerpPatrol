@@ -1,5 +1,5 @@
 run:
-  mode: simulator        # simulator | live
+  mode: live             # simulator | live
   log_level: INFO
   redis_url: ${REDIS_URL}
   prometheus_port: ${PROMETHEUS_PORT}

@@ -1,0 +1,49 @@
+run:
+  mode: simulator         # simulator | live
+  log_level: INFO
+  redis_url: ${REDIS_URL}
+  prometheus_port: ${PROMETHEUS_PORT}
+
+exchange:
+  name: woofi_pro
+  base_url: https://api.woofi.pro   # TODO: verify
+  ws_url: wss://ws.woofi.pro        # TODO: verify
+  api_key: ${WOOFI_API_KEY}
+  api_secret: ${WOOFI_API_SECRET}
+  passphrase: ${WOOFI_API_PASSPHRASE}
+
+strategy:
+  symbols: ["BTC-PERP"]
+  base_order_size: 0.001
+  max_inventory_usd: 1000
+  maker_bias: 1.0
+  refresh_min_ms: 400
+  refresh_jitter_ms: 200
+  width_vol_mult: 1.5
+  inv_skew_strength: 0.4
+  imbalance_skew_strength: 0.3
+  funding_bias_strength: 0.15
+  min_quote_notional: 20
+
+risk:
+  max_symbol_notional: 2000
+  max_portfolio_var_usd: 150
+  daily_loss_limit_usd: 200
+  drawdown_step_down: true
+  drawdown_step_pct: 0.33
+
+compliance:
+  self_match_protect: true
+  loop_min_holding_ms: 1500
+  max_amends_per_sec: 2
+
+ti_proxy:
+  target_maker_ratio: 0.7
+  max_slippage_frac: 0.3
+  min_avg_holding_ms: 2000
+  max_cancel_per_fill: 8
+
+dashboard:
+  enabled: true
+  host: localhost
+  port: 8501

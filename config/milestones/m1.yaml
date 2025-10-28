@@ -1,0 +1,14 @@
+run:
+  mode: simulator
+strategy:
+  symbols: ["BTC-PERP"]
+  width_vol_mult: 1.2
+  inv_skew_strength: 0.2
+  imbalance_skew_strength: 0.0
+  funding_bias_strength: 0.0
+risk:
+  daily_loss_limit_usd: 100
+compliance:
+  max_amends_per_sec: 1
+ti_proxy:
+  target_maker_ratio: 0.6

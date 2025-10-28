@@ -1,0 +1,6 @@
+# Example list; adjust to available WOOFi Pro perps
+symbols:
+  - BTC-PERP
+  - ETH-PERP
+  - SOL-PERP
+  - WOO-PERP

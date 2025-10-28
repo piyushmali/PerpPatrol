@@ -1,0 +1,16 @@
+run:
+  mode: simulator
+strategy:
+  symbols: ["BTC-PERP","ETH-PERP","SOL-PERP"]
+  width_vol_mult: 1.8
+  inv_skew_strength: 0.4
+  imbalance_skew_strength: 0.3
+  funding_bias_strength: 0.15
+  refresh_min_ms: 350
+risk:
+  daily_loss_limit_usd: 250
+  max_portfolio_var_usd: 150
+compliance:
+  max_amends_per_sec: 2
+ti_proxy:
+  target_maker_ratio: 0.75

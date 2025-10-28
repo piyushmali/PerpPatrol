@@ -7,8 +7,23 @@ from plotly.subplots import make_subplots
 import time
 import json
 import os
+import asyncio
 from datetime import datetime, timedelta
 import random
+
+# Import live data manager
+try:
+    import sys
+    sys.path.append('/mount/src/perppatrol')  # Streamlit Cloud path
+    from src.bot.api.live_data import live_data_manager
+    LIVE_DATA_AVAILABLE = True
+except ImportError:
+    try:
+        from src.bot.api.live_data import live_data_manager
+        LIVE_DATA_AVAILABLE = True
+    except ImportError:
+        LIVE_DATA_AVAILABLE = False
+        live_data_manager = None
 
 # Page config
 st.set_page_config(
@@ -194,7 +209,11 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Initialize session state for live data simulation
+# Check if we have real API credentials
+API_CREDENTIALS_AVAILABLE = bool(os.getenv('WOOFI_API_KEY') and os.getenv('WOOFI_API_SECRET'))
+USE_LIVE_DATA = LIVE_DATA_AVAILABLE and API_CREDENTIALS_AVAILABLE
+
+# Initialize session state for live data
 if 'bot_running' not in st.session_state:
     st.session_state.bot_running = False
 if 'pnl_history' not in st.session_state:
@@ -203,10 +222,56 @@ if 'trades_history' not in st.session_state:
     st.session_state.trades_history = []
 if 'last_update' not in st.session_state:
     st.session_state.last_update = datetime.now()
+if 'live_positions' not in st.session_state:
+    st.session_state.live_positions = []
+if 'live_orders' not in st.session_state:
+    st.session_state.live_orders = []
 
-# Live Data Simulation Functions
-def generate_live_data():
-    """Simulate live trading data"""
+# Live Data Functions
+async def fetch_real_data():
+    """Fetch real data from WOOFi Pro API"""
+    if not USE_LIVE_DATA:
+        return
+        
+    try:
+        # Fetch positions
+        positions = await live_data_manager.get_live_positions()
+        st.session_state.live_positions = positions
+        
+        # Fetch recent trades
+        trades = await live_data_manager.get_live_trades(limit=50)
+        st.session_state.trades_history = trades
+        
+        # Fetch orders
+        orders = await live_data_manager.get_live_orders()
+        st.session_state.live_orders = orders
+        
+        # Calculate PnL from positions
+        total_pnl = sum(pos.get('unrealized_pnl', 0) for pos in positions)
+        now = datetime.now()
+        
+        if st.session_state.pnl_history:
+            last_pnl = st.session_state.pnl_history[-1]['pnl']
+            pnl_change = total_pnl - last_pnl
+        else:
+            pnl_change = 0
+            
+        st.session_state.pnl_history.append({
+            'timestamp': now,
+            'pnl': total_pnl,
+            'change': pnl_change
+        })
+        
+        # Keep only last 100 points
+        if len(st.session_state.pnl_history) > 100:
+            st.session_state.pnl_history = st.session_state.pnl_history[-100:]
+            
+    except Exception as e:
+        st.error(f"Error fetching real data: {e}")
+        generate_simulated_data()
+
+def generate_simulated_data():
+    """Generate simulated trading data (fallback)"""
     now = datetime.now()
     
     # Generate PnL data point
@@ -243,15 +308,31 @@ def generate_live_data():
         if len(st.session_state.trades_history) > 50:
             st.session_state.trades_history = st.session_state.trades_history[-50:]
 
+def update_data():
+    """Update data - real or simulated"""
+    if USE_LIVE_DATA:
+        # Run async function in Streamlit
+        try:
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            loop.run_until_complete(fetch_real_data())
+            loop.close()
+        except Exception as e:
+            st.error(f"Error with live data: {e}")
+            generate_simulated_data()
+    else:
+        generate_simulated_data()
+
 # Auto-refresh data if bot is running
 if st.session_state.bot_running:
     if (datetime.now() - st.session_state.last_update).seconds > 2:
-        generate_live_data()
+        update_data()
         st.session_state.last_update = datetime.now()
 
 # Main Header
 st.markdown('<p class="header-text">PerpPatrol Live Dashboard</p>', unsafe_allow_html=True)
-st.markdown('<p class="subheader-text">Real-time Transaction Impact Optimization</p>', unsafe_allow_html=True)
+data_mode = "🔴 LIVE TRADING" if USE_LIVE_DATA else "🟡 SIMULATION"
+st.markdown(f'<p class="subheader-text">Real-time Transaction Impact Optimization | {data_mode}</p>', unsafe_allow_html=True)
 
 # Bot Control Panel
 st.markdown("### Bot Control Center")
@@ -262,20 +343,22 @@ with col1:
                 use_container_width=True):
         st.session_state.bot_running = not st.session_state.bot_running
         if st.session_state.bot_running:
-            st.success("Bot started successfully!")
-            generate_live_data()  # Generate initial data
+            if USE_LIVE_DATA:
+                st.success("🔴 LIVE TRADING STARTED!")
+            else:
+                st.success("🟡 Simulation started!")
+            update_data()  # Generate initial data
         else:
             st.warning("Bot stopped.")
 
 with col2:
     if st.button("🚨 Emergency Kill Switch", use_container_width=True):
         st.session_state.bot_running = False
-        st.error("EMERGENCY STOP ACTIVATED!")
+        st.error("🚨 EMERGENCY STOP ACTIVATED!")
 
 with col3:
     if st.button("🔄 Refresh Data", use_container_width=True):
-        if st.session_state.bot_running:
-            generate_live_data()
+        update_data()
         st.rerun()
 
 with col4:
@@ -329,30 +412,65 @@ with tab1:
     with col_left:
         st.subheader("Live Order Book")
         
-        # Generate order book data
-        mid_price = price
-        spread = random.uniform(0.01, 0.05)
-        
-        orderbook_data = []
-        for i in range(5):
-            ask_price = mid_price + spread/2 + (i * spread/10)
-            bid_price = mid_price - spread/2 - (i * spread/10)
+        if USE_LIVE_DATA:
+            # Fetch real orderbook
+            try:
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
+                orderbook_data = loop.run_until_complete(live_data_manager.get_live_orderbook(current_symbol))
+                loop.close()
+                
+                if orderbook_data:
+                    st.dataframe(pd.DataFrame(orderbook_data), use_container_width=True, hide_index=True)
+                else:
+                    st.info("No orderbook data available")
+            except Exception as e:
+                st.error(f"Error fetching orderbook: {e}")
+                # Fallback to simulated data
+                orderbook_data = []
+                mid_price = price
+                spread = random.uniform(0.01, 0.05)
+                
+                for i in range(5):
+                    ask_price = mid_price + spread/2 + (i * spread/10)
+                    orderbook_data.append({
+                        'Type': 'ASK',
+                        'Price': f"${ask_price:.2f}",
+                        'Size': f"{random.uniform(0.1, 2.0):.3f}"
+                    })
+                    
+                for i in range(5):
+                    bid_price = mid_price - spread/2 - (i * spread/10)
+                    orderbook_data.append({
+                        'Type': 'BID', 
+                        'Price': f"${bid_price:.2f}",
+                        'Size': f"{random.uniform(0.1, 2.0):.3f}"
+                    })
+                
+                st.dataframe(pd.DataFrame(orderbook_data), use_container_width=True, hide_index=True)
+        else:
+            # Generate simulated order book data
+            orderbook_data = []
+            mid_price = price
+            spread = random.uniform(0.01, 0.05)
             
-            orderbook_data.append({
-                'Type': 'ASK',
-                'Price': f"${ask_price:.2f}",
-                'Size': f"{random.uniform(0.1, 2.0):.3f}"
-            })
+            for i in range(5):
+                ask_price = mid_price + spread/2 + (i * spread/10)
+                orderbook_data.append({
+                    'Type': 'ASK',
+                    'Price': f"${ask_price:.2f}",
+                    'Size': f"{random.uniform(0.1, 2.0):.3f}"
+                })
+                
+            for i in range(5):
+                bid_price = mid_price - spread/2 - (i * spread/10)
+                orderbook_data.append({
+                    'Type': 'BID', 
+                    'Price': f"${bid_price:.2f}",
+                    'Size': f"{random.uniform(0.1, 2.0):.3f}"
+                })
             
-        for i in range(5):
-            bid_price = mid_price - spread/2 - (i * spread/10)
-            orderbook_data.append({
-                'Type': 'BID', 
-                'Price': f"${bid_price:.2f}",
-                'Size': f"{random.uniform(0.1, 2.0):.3f}"
-            })
-        
-        st.dataframe(pd.DataFrame(orderbook_data), use_container_width=True, hide_index=True)
+            st.dataframe(pd.DataFrame(orderbook_data), use_container_width=True, hide_index=True)
     
     with col_right:
         st.subheader("Recent Trades")

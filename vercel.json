@@ -1,0 +1,14 @@
+{
+  "builds": [
+    {
+      "src": "src/bot/telemetry/dashboard.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "src/bot/telemetry/dashboard.py"
+    }
+  ]
+}

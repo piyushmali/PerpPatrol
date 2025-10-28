@@ -31,7 +31,6 @@ class WOOFiProAPI:
             if self.api_key.startswith('ed25519:'):
                 # Proper ed25519 signing for WOOFi Pro
                 from nacl.signing import SigningKey
-                from nacl.encoding import Base58Encoder
                 import base58
                 
                 # The API secret is the private key in base58 format

@@ -1,13 +1,13 @@
 run:
-  mode: simulator         # simulator | live
+  mode: simulator        # simulator | live
   log_level: INFO
   redis_url: ${REDIS_URL}
   prometheus_port: ${PROMETHEUS_PORT}
 
 exchange:
   name: woofi_pro
-  base_url: https://api.woofi.pro   # TODO: verify
-  ws_url: wss://ws.woofi.pro        # TODO: verify
+  base_url: https://api.woo.org
+  ws_url: wss://wss.woo.org
   api_key: ${WOOFI_API_KEY}
   api_secret: ${WOOFI_API_SECRET}
 

@@ -10,7 +10,6 @@ exchange:
   ws_url: wss://ws.woofi.pro        # TODO: verify
   api_key: ${WOOFI_API_KEY}
   api_secret: ${WOOFI_API_SECRET}
-  passphrase: ${WOOFI_API_PASSPHRASE}
 
 strategy:
   symbols: ["BTC-PERP"]

@@ -373,6 +373,9 @@ with col1:
                 st.success("🔴 LIVE TRADING STARTED!")
             else:
                 st.success("🟡 Simulation started!")
+            # Initialize data if empty
+            if not st.session_state.pnl_history:
+                generate_simulated_data()
             update_data()  # Generate initial data
         else:
             st.warning("Bot stopped.")
@@ -389,8 +392,10 @@ with col3:
 
 with col4:
     auto_refresh = st.checkbox("Auto Refresh (2s)", value=st.session_state.bot_running)
-    if auto_refresh and st.session_state.bot_running:
-        time.sleep(2)
+    # Don't auto-refresh immediately after starting bot
+    if auto_refresh and st.session_state.bot_running and (datetime.now() - st.session_state.last_update).seconds >= 2:
+        update_data()
+        st.session_state.last_update = datetime.now()
         st.rerun()
 
 # Status indicator
@@ -407,7 +412,9 @@ maker_ratio = random.uniform(72, 78)
 cancel_ratio = random.uniform(2.1, 3.5)
 hold_time = random.uniform(2.2, 2.8)
 
-# Get current PnL from live data
+# Get current PnL from live data - ensure we always have data
+if not st.session_state.pnl_history:
+    generate_simulated_data()
 current_pnl = st.session_state.pnl_history[-1]['pnl'] if st.session_state.pnl_history else 100
 
 # Modern Tab Interface
@@ -479,7 +486,12 @@ with tab1:
             trades_df = trades_df[available_cols].rename(columns=rename_dict)
             st.dataframe(trades_df, use_container_width=True, hide_index=True)
         else:
-            st.info("No trades yet. Start the bot to see live trading data.")
+            # Generate some initial trade data if none exists
+            if st.session_state.bot_running:
+                generate_simulated_data()
+                st.info("Generating initial trade data...")
+            else:
+                st.info("No trades yet. Start the bot to see live trading data.")
 
 with tab2:
     st.header("Analytics & Data Visualization")

@@ -11,15 +11,17 @@
 *"First, let me fire up PerpPatrol so you can see this in action:"*
 - Run `python run_dashboard.py` in terminal
 - *"This opens our live trading dashboard - you can see it's connecting to WOOFi Pro right now"*
-- *"Notice the clean interface with four main tabs - this is where all the magic happens"*
-- *"The bot is already running and placing real orders"*
+- *"Notice the Bot Control Center at the top - this is where you control everything"*
+- *"The bot is already running and placing real orders - you can see the green 'ACTIVE' status"*
+- *"Clean interface with four main tabs - this is where all the magic happens"*
 
 #### 2. **Live Trading Demonstration** (2 minutes)
 *"Now let's see PerpPatrol actually trading live:"*
+- Point to Bot Control Center: *"You can see the bot is active and running - green status means it's live trading"*
 - Switch to Tab 1 (Live Performance)
 - *"Here's what's happening right now - you can see the bot is actively placing orders"*
 - Show the order book updating: *"Look at these bid and ask prices updating in real-time from WOOFi Pro"*
-- Switch between symbols (BTC → ETH → SOL): *"The cool thing is it automatically adapts to different markets"*
+- Use symbol selector in Control Center: *"Let me switch from BTC to ETH to SOL - watch how it automatically adapts to different markets"*
 - Point to metrics: *"See this maker ratio at 75%? That means 75% of our trades are earning fees instead of paying them"*
 - *"And look at this cancel-to-fill ratio - only 2.8 cancels per successful trade, which is really efficient"*
 - *"Watch these recent trades coming in - each one shows the profit or loss in real-time"*
@@ -58,6 +60,7 @@
 
 #### What You'll Show
 - **Dashboard Launch**: One command gets everything running
+- **Bot Control Center**: Start/stop controls, emergency kill switch, symbol switching
 - **Live Trading**: Real orders being placed and filled on WOOFi Pro
 - **Multiple Markets**: Switch between BTC, ETH, SOL to show adaptability
 - **Performance Metrics**: Clear numbers that prove the value
@@ -84,6 +87,17 @@
 - **Multi-market**: Works across all WOOFi Pro perpetuals
 
 ## 🎯 Dashboard Walkthrough
+
+### Bot Control Center
+*"Right at the top, you'll see our Bot Control Center - this is your command center:"*
+- **🟢 Start Bot / 🔴 Stop Bot**: One-click control to start or stop live trading
+- **🚨 Emergency Kill Switch**: Instant emergency stop for all trading activity
+- **🔄 Refresh Data**: Manual refresh button to update all metrics immediately
+- **Auto Refresh (2s)**: Toggle for automatic data updates every 2 seconds
+- **Bot Status Indicator**: Shows "🟢 ACTIVE" or "🔴 STOPPED" with last update time
+- **Symbol Selector**: Dropdown to switch between BTC-PERP, ETH-PERP, SOL-PERP, AVAX-PERP
+
+*"This is where you have complete control over the bot's operation. You can start trading with one click, stop everything instantly if needed, or switch between different markets to see how PerpPatrol adapts to each one."*
 
 ### Tab 1: Live Performance
 *"This is where the action happens:"*
@@ -196,12 +210,14 @@ python run_dashboard.py
 
 ### During Recording
 - [ ] Speak clearly and confidently
+- [ ] Show Bot Control Center and explain start/stop functionality
 - [ ] Point to specific numbers/metrics
-- [ ] Show symbol switching (BTC → ETH → SOL)
+- [ ] Use symbol selector to switch markets (BTC → ETH → SOL)
 - [ ] Highlight the 75% maker ratio
 - [ ] Mention 60% cost reduction
 - [ ] Show safety features in Tab 4
 - [ ] Emphasize live trading with real orders
+- [ ] Demonstrate emergency kill switch capability
 
 ### After Recording
 - [ ] Check audio quality

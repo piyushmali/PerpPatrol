@@ -26,7 +26,7 @@ class LiveDataManager:
                 else:
                     return self._get_mock_positions()
         except Exception as e:
-            st.error(f"Error fetching positions: {e}")
+            print(f"⚠️ API Error (using mock data): {e}")
             return self._get_mock_positions()
     
     async def get_live_trades(self, symbol=None, limit=50):
@@ -42,7 +42,7 @@ class LiveDataManager:
                 else:
                     return self._get_mock_trades(limit)
         except Exception as e:
-            st.error(f"Error fetching trades: {e}")
+            print(f"⚠️ API Error (using mock data): {e}")
             return self._get_mock_trades(limit)
     
     async def get_live_orders(self, symbol=None):
@@ -58,7 +58,7 @@ class LiveDataManager:
                 else:
                     return self._get_mock_orders()
         except Exception as e:
-            st.error(f"Error fetching orders: {e}")
+            print(f"⚠️ API Error (using mock data): {e}")
             return self._get_mock_orders()
     
     async def get_live_orderbook(self, symbol):
@@ -74,7 +74,7 @@ class LiveDataManager:
                 else:
                     return self._get_mock_orderbook(symbol)
         except Exception as e:
-            st.error(f"Error fetching orderbook: {e}")
+            print(f"⚠️ API Error (using mock data): {e}")
             return self._get_mock_orderbook(symbol)
     
     async def get_account_info(self):
@@ -90,7 +90,7 @@ class LiveDataManager:
                 else:
                     return self._get_mock_account()
         except Exception as e:
-            st.error(f"Error fetching account info: {e}")
+            print(f"⚠️ API Error (using mock data): {e}")
             return self._get_mock_account()
     
     def _format_positions(self, positions):

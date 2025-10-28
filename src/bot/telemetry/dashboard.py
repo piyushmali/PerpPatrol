@@ -354,7 +354,10 @@ if st.session_state.bot_running:
 
 # Main Header
 st.markdown('<p class="header-text">PerpPatrol Live Dashboard</p>', unsafe_allow_html=True)
-data_mode = "🔴 LIVE TRADING" if USE_LIVE_DATA else "🟡 SIMULATION"
+if USE_LIVE_DATA:
+    data_mode = "🔴 LIVE TRADING (Mock data due to API auth)"
+else:
+    data_mode = "🟡 SIMULATION"
 st.markdown(f'<p class="subheader-text">Real-time Transaction Impact Optimization | {data_mode}</p>', unsafe_allow_html=True)
 
 # Bot Control Panel
@@ -464,9 +467,16 @@ with tab1:
         if st.session_state.trades_history:
             trades_df = pd.DataFrame(st.session_state.trades_history[-10:])
             trades_df['Time'] = trades_df['timestamp'].dt.strftime('%H:%M:%S')
-            trades_df = trades_df[['Time', 'side', 'size', 'price', 'pnl']].rename(columns={
-                'side': 'Side', 'size': 'Size', 'price': 'Price', 'pnl': 'PnL'
-            })
+            
+            # Check which columns exist and select accordingly
+            available_cols = ['Time', 'side', 'size', 'price']
+            rename_dict = {'side': 'Side', 'size': 'Size', 'price': 'Price'}
+            
+            if 'pnl' in trades_df.columns:
+                available_cols.append('pnl')
+                rename_dict['pnl'] = 'PnL'
+            
+            trades_df = trades_df[available_cols].rename(columns=rename_dict)
             st.dataframe(trades_df, use_container_width=True, hide_index=True)
         else:
             st.info("No trades yet. Start the bot to see live trading data.")

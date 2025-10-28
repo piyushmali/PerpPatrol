@@ -2,9 +2,10 @@
 
 > **The first market-making bot that optimizes for transaction costs, not just profit**
 
-[![Hackathon](https://img.shields.io/badge/Hackathon-DeFrenz%20x%20WOO%20x%20GoMining-blue)](https://dorahacks.io/hackathon/defrensxwooxgomining/detail)
 [![WOOFi Pro](https://img.shields.io/badge/Built%20for-WOOFi%20Pro-orange)](https://pro.woofi.com)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/Python-3.8%2B-blue)](https://python.org)
+[![Trading](https://img.shields.io/badge/Trading-Market%20Making-green)](https://github.com/piyushmali/PerpPatrol)
 
 ## 🚀 Revolutionary Innovation
 
@@ -122,22 +123,24 @@ python -m src.simulator.run_backtest --config config/settings.example.yaml
 python -m src.simulator.scenario_vol_spike
 ```
 
-## 🏆 Hackathon Highlights
+## 🏆 Key Advantages
 
 ### 🎯 Innovation
 - **First TI-aware market making bot**
 - **60%+ reduction in transaction costs**
-- **Novel approach to algorithmic trading**
+- **Revolutionary approach to algorithmic trading**
 
 ### 🔧 Technical Excellence
 - **Production-ready architecture**
 - **Comprehensive testing suite**
 - **Real-time monitoring dashboard**
+- **Advanced risk management systems**
 
 ### 🌐 Market Impact
 - **Built for WOOFi Pro ecosystem**
 - **Scalable across all perpetual markets**
 - **Open-source for community benefit**
+- **Institutional-grade compliance**
 
 ## 📈 Supported Markets
 
@@ -149,23 +152,35 @@ python -m src.simulator.scenario_vol_spike
 
 ## 🤝 Contributing
 
-Built for the **DeFrenz x WOO x GoMining Hackathon** - contributions welcome!
+We welcome contributions from the trading and development community! Please feel free to:
+
+- **Report Issues**: Submit bug reports and feature requests
+- **Submit PRs**: Contribute code improvements and new features
+- **Documentation**: Help improve guides and examples
+- **Testing**: Add test cases and performance benchmarks
 
 ## 📄 License
 
 MIT License - see [LICENSE](LICENSE) file for details.
 
-## 🎯 Contact
+## 🎯 Contact & Support
 
 - **GitHub**: [PerpPatrol Repository](https://github.com/piyushmali/PerpPatrol)
-- **Hackathon**: [DoraHacks Submission](https://dorahacks.io/hackathon/defrensxwooxgomining/detail)
+- **Issues**: [GitHub Issues](https://github.com/piyushmali/PerpPatrol/issues)
+- **Documentation**: [Project Wiki](https://github.com/piyushmali/PerpPatrol/wiki)
+
+## 🌟 Acknowledgments
+
+- **WOOFi Pro Team** - For providing excellent API and platform
+- **Trading Community** - For feedback and feature suggestions
+- **Open Source Contributors** - For code improvements and testing
 
 ---
 
 <div align="center">
 
-**🏆 Built with ❤️ for the DeFrenz x WOO x GoMining Hackathon**
+**🎯 PerpPatrol - Revolutionizing Market Making**
 
-*Transforming market making through intelligent transaction cost optimization*
+*First TI-aware bot optimizing transaction costs for sustainable trading*
 
 </div>

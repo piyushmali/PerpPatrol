@@ -2,7 +2,7 @@
 
 ## 🎯 Project Overview
 
-**PerpPatrol** is a revolutionary market-making bot designed specifically for **WOOFi Pro** that optimizes for **Transaction Impact (TI)** rather than just profit. Built for the **DeFrenz x WOO x GoMining Hackathon**, it represents the first bot to intelligently minimize trading costs while maximizing market-making efficiency.
+**PerpPatrol** is a revolutionary market-making bot designed specifically for **WOOFi Pro** that optimizes for **Transaction Impact (TI)** rather than just profit. It represents the first bot to intelligently minimize trading costs while maximizing market-making efficiency in the cryptocurrency derivatives market.
 
 ## 🚀 Key Innovation: Transaction Impact Optimization
 
@@ -97,13 +97,15 @@ TI-optimized performance:
 ### Step 3: Results
 60%+ reduction in transaction costs while maintaining profitability.
 
-## 🏆 Hackathon Highlights
+## 🏆 Key Differentiators
 
 - **First TI-aware market making bot**
 - **Built specifically for WOOFi Pro**
 - **Production-ready with comprehensive testing**
-- **Real-time dashboard for live demos**
+- **Real-time dashboard for live monitoring**
 - **Open-source and well-documented**
+- **Institutional-grade risk management**
+- **Advanced compliance systems**
 
 ## 🚀 Getting Started
 
@@ -142,4 +144,4 @@ streamlit run src/bot/telemetry/dashboard.py --server.port 8501
 
 ---
 
-*Built with ❤️ for the DeFrenz x WOO x GoMining Hackathon*
+*Revolutionizing market making through intelligent transaction cost optimization*

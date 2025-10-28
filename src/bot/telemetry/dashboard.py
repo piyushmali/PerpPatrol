@@ -574,4 +574,4 @@ with tab4:
 
 # Footer
 st.markdown("---")
-st.markdown("**PerpPatrol v2.1.0** - First TI-Aware Market Making Bot for WOOFi Pro | Built for DeFrenz x WOO x GoMining Hackathon")
+st.markdown("**PerpPatrol v2.1.0** - First TI-Aware Market Making Bot for WOOFi Pro | Advanced Transaction Impact Optimization")

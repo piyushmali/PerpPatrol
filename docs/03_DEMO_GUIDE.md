@@ -1,6 +1,6 @@
-# Demo & Hackathon Guide
+# Demo & Presentation Guide
 
-## 🎯 Hackathon Demo Script
+## 🎯 Professional Demo Script
 
 ### 30-Second Elevator Pitch
 *"PerpPatrol is the first market-making bot that optimizes for transaction costs, not just profit. Built for WOOFi Pro, it reduces trading costs by 60% while increasing maker ratios from 45% to 75%. It's the smart way to do market making."*
@@ -23,7 +23,7 @@
 #### 3. **Results & Innovation** (30 seconds)
 - Tab 3: Show the improvement metrics
 - *"60% cost reduction, 67% better maker ratio"*
-- Hit the "Hackathon Summary" button for celebration effect
+- Highlight the key innovation and performance gains
 - *"First bot to optimize transaction impact, not just profit"*
 
 ## 🚀 Live Demo Setup
@@ -42,9 +42,10 @@ streamlit run src/bot/telemetry/dashboard.py --server.port 8501
 
 ### Demo Environment
 - **Mode**: Live trading with WOOFi Pro
-- **Symbols**: BTC-PERP, ETH-PERP, SOL-PERP
-- **Dashboard**: Interactive 3-tab journey
+- **Symbols**: BTC-PERP, ETH-PERP, SOL-PERP, AVAX-PERP
+- **Dashboard**: Interactive 4-tab interface
 - **Terminal**: Live order flow visible
+- **Features**: Real-time charts and controls
 
 ## 📊 Key Demo Points
 
@@ -172,27 +173,35 @@ If live demo fails:
 ### Innovation Highlight
 *"Revolutionary TI-aware algorithms that optimize for transaction costs, not just profit"*
 
-## 🏅 Winning Strategy
+## 🏅 Presentation Best Practices
 
-### Before Demo
+### Before Presentation
 - [ ] Test all systems thoroughly
-- [ ] Prepare backup slides/materials
-- [ ] Practice 30-second pitch
-- [ ] Verify internet connectivity
+- [ ] Prepare backup materials and slides
+- [ ] Practice 30-second elevator pitch
+- [ ] Verify internet connectivity and API access
 
-### During Demo
+### During Presentation
 - [ ] Start with clear problem statement
 - [ ] Show live, interactive dashboard
 - [ ] Highlight unique TI innovation
 - [ ] Demonstrate WOOFi Pro integration
 - [ ] End with strong results summary
+- [ ] Engage audience with interactive elements
 
-### After Demo
+### After Presentation
 - [ ] Answer technical questions confidently
 - [ ] Provide GitHub repository access
 - [ ] Offer follow-up technical discussions
-- [ ] Connect with judges and sponsors
+- [ ] Share documentation and resources
+- [ ] Connect with potential users and contributors
+
+### Follow-up Resources
+- **GitHub Repository**: Complete source code and documentation
+- **Technical Papers**: Detailed TI optimization methodology
+- **Performance Reports**: Backtesting and live trading results
+- **Integration Guides**: How to deploy and customize
 
 ---
 
-*Demo optimized for hackathon judges and WOOFi Pro ecosystem*
+*Professional presentation guide for trading technology demonstrations*

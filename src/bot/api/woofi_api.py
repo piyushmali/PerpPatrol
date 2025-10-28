@@ -62,7 +62,7 @@ class WOOFiProAPI:
         """Get account information"""
         try:
             timestamp = str(int(time.time() * 1000))
-            path = "/v1/client/info"
+            path = "/v1/private/client/info"
             signature = self._generate_signature(timestamp, "GET", path)
             
             headers = {
@@ -86,7 +86,7 @@ class WOOFiProAPI:
         """Get current positions"""
         try:
             timestamp = str(int(time.time() * 1000))
-            path = "/v1/positions"
+            path = "/v1/private/positions"
             signature = self._generate_signature(timestamp, "GET", path)
             
             headers = {
@@ -111,7 +111,7 @@ class WOOFiProAPI:
         """Get current orders"""
         try:
             timestamp = str(int(time.time() * 1000))
-            path = "/v1/orders"
+            path = "/v1/private/orders"
             if symbol:
                 path += f"?symbol={symbol}"
             
@@ -139,7 +139,7 @@ class WOOFiProAPI:
         """Get recent trades"""
         try:
             timestamp = str(int(time.time() * 1000))
-            path = f"/v1/client/trades?size={limit}"
+            path = f"/v1/private/client/trades?size={limit}"
             if symbol:
                 path += f"&symbol={symbol}"
             
@@ -181,7 +181,7 @@ class WOOFiProAPI:
         """Place an order"""
         try:
             timestamp = str(int(time.time() * 1000))
-            path = "/v1/order"
+            path = "/v1/private/order"
             
             body_data = {
                 "symbol": symbol,
